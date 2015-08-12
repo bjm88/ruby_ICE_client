@@ -31,9 +31,13 @@ module RubyICEClient
       ns = xml.doc.root.add_namespace_definition 'S', 'http://www.w3.org/2003/05/soap-envelope'
       xml.doc.root.namespace = ns
       xml.doc.root.child.namespace = ns
+      ns2 = xml.doc.root.child.child.add_namespace_definition 'ns2', 'http://www.w3.org/2003/05/soap-envelope'
+      xml.doc.root.child.child.namespace = ns2
 
       uri = URI.parse url
       http = Net::HTTP.new uri.host, uri.port
+      http.use_ssl = true
+      http.verify_mode = OpenSSL::SSL::VERIFY_NONE
       request = Net::HTTP::Post.new uri.path
       request.body = xml.to_xml
       response = http.request request
@@ -41,7 +45,7 @@ module RubyICEClient
       puts "#{response_xml}"
       output_message_node = response_xml.xpath '//evaluationResponse//base64EncodedPayload' if response_xml.present?
       if output_message_node.present? && output_message_node.first.present?
-        return Base64.decode64 output_message_node.first.text 
+        return Base64.decode64 output_message_node.first.text
       else
         return nil
       end
