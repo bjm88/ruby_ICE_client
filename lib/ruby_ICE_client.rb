@@ -37,6 +37,9 @@ module RubyICEClient
       uri = URI.parse url
       http = Net::HTTP.new uri.host, uri.port
       http.use_ssl = true
+      http.open_timeout = ENV['ICE_OPEN_TIMEOUT'] || 30
+      http.read_timeout = ENV['ICE_READ_TIMEOUT'] || 30
+      http.ssl_timeout = ENV['ICE_SSL_TIMEOUT'] || 30
       http.verify_mode = OpenSSL::SSL::VERIFY_NONE
       request = Net::HTTP::Post.new uri.path
       request.body = xml.to_xml
