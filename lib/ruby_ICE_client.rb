@@ -45,7 +45,6 @@ module RubyICEClient
       request.body = xml.to_xml
       response = http.request request
       response_xml = Nokogiri::XML response.body
-      puts "#{response_xml}"
       output_message_node = response_xml.xpath '//evaluationResponse//base64EncodedPayload' if response_xml.present?
       if output_message_node.present? && output_message_node.first.present?
         return Base64.decode64 output_message_node.first.text
